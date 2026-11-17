@@ -1,1 +1,5 @@
 references/learned_lessons.jsonl
+health_metrics.json
+__pycache__/
+*.pyc
+.env
