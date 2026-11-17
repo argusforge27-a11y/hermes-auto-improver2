@@ -63,6 +63,8 @@ scripts/run_health_check.py ──► collects metrics per skill
 | `run_health_check.py` | Discovers all skills, runs their evals, computes metrics |
 | `improve_skill.py` | Uses skill-creator agents to propose and validate fixes |
 | `sync_memory.py` | Writes lessons to ~/.hermes/memory/ and skill references/ |
+| `check_degraded.py` | Reads metrics JSON, outputs `degraded=N` and `skills=...` to `$GITHUB_OUTPUT` |
+| `get_degraded_skills.py` | Reads metrics JSON, prints only degraded skill names (for for-loop) |
 | `github_actions.yml` | Daily cron workflow definition |
 
 ## Metrics Tracked (per skill)

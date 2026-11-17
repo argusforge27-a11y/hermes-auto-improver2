@@ -65,24 +65,15 @@ jobs:
       - name: Check for Degraded Skills
         id: check
         run: |
-          python -c "
-import json, os
-path = 'health_metrics.json'
-if os.path.exists(path):
-    data = json.load(open(path))
-    degraded = [s for s in data['skills'] if not s['healthy']]
-    print(f'degraded={len(degraded)}')
-    print(f'skills={\" \".join(s[\"skill\"] for s in degraded)}')
-else:
-    print('degraded=0')
-    print('skills=')
-" >> $GITHUB_OUTPUT
+          python scripts/check_degraded.py >> $GITHUB_OUTPUT
       
       - name: Trigger Improvements
         if: steps.check.outputs.degraded != '0'
         run: |
-          for skill in ${{ steps.check.outputs.skills }}; do
-            python scripts/improve_skill.py --skill "$skill"
+          SKILLS=$(python scripts/get_degraded_skills.py)
+          for skill in $SKILLS; do
+            echo "=== IMPROVING: $skill ==="
+            python scripts/improve_skill.py --skill "$skill" --skills-root "${{ github.workspace }}"
           done
       
       - name: Sync Memory
