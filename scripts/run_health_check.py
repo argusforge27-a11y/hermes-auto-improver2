@@ -27,12 +27,12 @@ def discover_skills() -> List[Path]:
     if (SKILLS_DIR / "SKILL.md").exists():
         skills.append(SKILLS_DIR)
     
-    # Check category subdirectories
-    for cat_dir in SKILLS_DIR.iterdir():
-        if cat_dir.is_dir():
-            for skill_dir in cat_dir.iterdir():
-                if skill_dir.is_dir() and (skill_dir / "SKILL.md").exists():
-                    skills.append(skill_dir)
+    # Find all skill directories (both direct children and nested in categories)
+    for skill_dir in SKILLS_DIR.rglob("*"):
+        if skill_dir.is_dir() and (skill_dir / "SKILL.md").exists():
+            # Avoid duplicates (skills_dir itself is already added)
+            if skill_dir not in skills:
+                skills.append(skill_dir)
     return skills
 
 
