@@ -29,8 +29,8 @@ A skill that runs on a cloud scheduler (GitHub Actions) to continuously improve 
 ## What It Does
 
 - **Daily health checks**: Runs evals on every installed skill, measures trigger accuracy, latency, hallucination rate, tool-use success
-- **Automatic improvement**: When a skill degrades, drafts fixes using skill-creator's improve_description.py + comparator/analyzer agents
-- **Smart merge**: Auto-merges improvements that pass all evals; opens PR for uncertain changes
+- **Automatic improvement**: When a skill degrades, runs evals → parses failures → analyzes root causes → applies targeted code fixes → re-validates → commits if metrics improve
+- **Smart merge**: Auto-commits improvements that pass all evals; opens PR for uncertain changes
 - **Memory sync**: Pushes learned patterns and lessons to local Hermes memory
 
 ## Architecture
@@ -46,14 +46,23 @@ scripts/run_health_check.py ──► collects metrics per skill
     └── degraded skills found ──► scripts/improve_skill.py
                                         │
                                         ▼
-                                  proposes fixes
+                                  runs evals to find failures
                                         │
                                         ▼
-                                  runs evals on fixes
+                                  parses failure output
                                         │
-                                        ├── passes ──► auto-commit to skill
+                                        ▼
+                                  analyzes root causes (pattern matching)
                                         │
-                                        └── uncertain ──► open PR for review
+                                        ▼
+                                  applies targeted code fixes to temp copy
+                                        │
+                                        ▼
+                                  validates in temp copy (quick_validate + full evals)
+                                        │
+                                        ├── passes ──► writes to real skill dir → commit
+                                        │
+                                        └── fails ──► discards, reports failure
 ```
 
 ## Core Scripts
@@ -61,11 +70,12 @@ scripts/run_health_check.py ──► collects metrics per skill
 | Script | Purpose |
 |--------|---------|
 | `run_health_check.py` | Discovers all skills, runs their evals, computes metrics |
-| `improve_skill.py` | Uses skill-creator agents to propose and validate fixes |
+| `improve_skill.py` | Runs evals → parses failures → analyzes root causes → applies targeted code fixes → re-validates → commits if metrics improve |
 | `sync_memory.py` | Writes lessons to ~/.hermes/memory/ and skill references/ |
 | `check_degraded.py` | Reads metrics JSON, outputs `degraded=N` and `skills=...` to `$GITHUB_OUTPUT` |
 | `get_degraded_skills.py` | Reads metrics JSON, prints only degraded skill names (for for-loop) |
 | `github_actions.yml` | Daily cron workflow definition |
+| `run_eval.py` | 4 tests: health check runs, improve_skill dry run, sync_memory runs, quick_validate passes |
 
 ## Metrics Tracked (per skill)
 
@@ -77,11 +87,15 @@ scripts/run_health_check.py ──► collects metrics per skill
 ## Improvement Loop
 
 For each degraded skill:
-1. **Analyze**: Run comparator/analyzer on current vs. ideal outputs
-2. **Draft**: Generate improved SKILL.md + reference files
-3. **Validate**: Run quick_validate.py + full eval suite
-4. **Decide**: If all metrics improve → auto-merge; else → open PR
-5. **Record**: Write lesson to memory/references/
+1. **Run evals**: Execute `scripts/run_eval.py` on the skill
+2. **If evals pass**: Skill is healthy, skip improvement
+3. **Parse failures**: Extract `[FAIL]` or `[ERROR]` lines and output from eval
+4. **Analyze root causes**: Pattern-match failure output (ModuleNotFoundError → add import, AttributeError → add method, etc.)
+5. **Apply fixes**: Apply targeted patches to skill scripts in temp copy
+6. **Validate**: Run `quick_validate.py` and full evals on temp copy
+7. **If validation passes**: Write changes to real skill directory
+8. **Commit**: Changes are committed and pushed
+9. **Record**: Write lesson to memory/references/
 
 ## Deployment
 
@@ -168,6 +182,7 @@ For any skill to run in GitHub Actions (or any cloud runner):
 - **Checkout with fetch-depth: 0**: `actions/checkout@v4` defaults to shallow clone (depth 1), which breaks `git push` from CI. Add `with: fetch-depth: 0` to the checkout step so the full history is available for committing and pushing.
 - **GitHub Actions runner needs git identity configured**: Before `git commit` in CI, set `git config user.name` and `git config user.email`. The default runner has no identity, causing commit failures. Use `github-actions[bot]` name/email for automated commits.
 - **Exit code 143 = SIGTERM (timeout)**: When a GitHub Actions step fails with exit code 143, the process was killed by a timeout signal — not a code error. Check for infinite loops, circular dependencies, or scripts that hang waiting on stdin/network. The 30-min job timeout is the usual killer.
+- **Real improvement engine parses failures locally**: `improve_skill.py` analyzes eval output with pattern matching (ModuleNotFoundError → add import, AttributeError → add method, etc.). It does NOT use LLM agents or external comparator/analyzer tools. The fix is only applied if validation passes in a temp copy first.
 
 
 
