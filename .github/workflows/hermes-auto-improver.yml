@@ -10,6 +10,9 @@ permissions:
   pull-requests: write
 
 env:
+  # Skills dir must be populated before running health check
+  # Option 1: Skills are in this repo (workflow expects all skills here)
+  # Option 2: Override via HERMES_SKILLS_DIR env var to point to cloned skills repo
   HERMES_SKILLS_DIR: ${{ github.workspace }}
   HERMES_METRICS_FILE: ${{ github.workspace }}/health_metrics.json
   HERMES_MEMORY_FILE: ${{ github.workspace }}/.hermes/memory/memory.json
