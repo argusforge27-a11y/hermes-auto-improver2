@@ -55,24 +55,13 @@ jobs:
       
       - name: Check for Degraded Skills
         id: check
-        run: |
-          python -c "
-          import json, os
-          path = 'health_metrics.json'
-          if os.path.exists(path):
-              data = json.load(open(path))
-              degraded = [s for s in data.get('skills', []) if not s.get('healthy', True)]
-              print(f'degraded={len(degraded)}')
-              print('skills=' + ' '.join(s['skill'] for s in degraded))
-          else:
-              print('degraded=0')
-              print('skills=')
-          " >> $GITHUB_OUTPUT
+        run: python scripts/check_degraded.py >> $GITHUB_OUTPUT
       
       - name: Trigger Improvements
         if: steps.check.outputs.degraded != '0'
         run: |
-          for skill in ${{ steps.check.outputs.skills }}; do
+          SKILLS=$(python scripts/get_degraded_skills.py)
+          for skill in $SKILLS; do
             echo "=== IMPROVING: $skill ==="
             python scripts/improve_skill.py --skill "$skill" --skills-root "${{ github.workspace }}"
           done
@@ -99,7 +88,7 @@ jobs:
           branch: auto-improve/${{ github.run_id }}
           title: "Auto-improve: degraded skills detected"
           body: |
-            Health check found degraded skills: ${{ steps.check.outputs.skills }}
+            Health check found degraded skills.
             See workflow run for details.
           labels: auto-improve, needs-review
           commit-message: "Auto-improve degraded skills"
