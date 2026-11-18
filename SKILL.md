@@ -170,3 +170,6 @@ For any skill to run in GitHub Actions (or any cloud runner):
 - **Exit code 143 = SIGTERM (timeout)**: When a GitHub Actions step fails with exit code 143, the process was killed by a timeout signal — not a code error. Check for infinite loops, circular dependencies, or scripts that hang waiting on stdin/network. The 30-min job timeout is the usual killer.
 
 
+
+
+<!-- AUTO-IMPROVED: Add verification step after each tool call; Ensure all referenced files exist -->
