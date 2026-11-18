@@ -3,3 +3,4 @@ health_metrics.json
 __pycache__/
 *.pyc
 .env
+.hermes/skills/productivity/hermes-auto-improver/
