@@ -99,40 +99,28 @@ def validate_skill_references(skill_dir: Path) -> tuple[bool, str]:
 
 
 def run_skill_evals(skill_dir: Path) -> Dict[str, Any]:
-    """Run evals for a single skill, return metrics"""
+    """Validate a single skill (frontmatter + references). Does NOT run eval scripts
+    to avoid circular dependencies (eval scripts may call health check)."""
     skill_name = skill_dir.name
     start = time.time()
-    
+
     eval_script = skill_dir / "scripts" / "run_eval.py"
-    if eval_script.exists():
-        try:
-            result = subprocess.run(
-                [sys.executable, str(eval_script)],
-                capture_output=True, text=True, timeout=120,
-                cwd=skill_dir
-            )
-            success = result.returncode == 0
-            output = result.stdout + result.stderr
-        except subprocess.TimeoutExpired:
-            success = False
-            output = "TIMEOUT"
-        except Exception as e:
-            success = False
-            output = str(e)
-    else:
-        fm_ok, fm_msg = validate_skill_frontmatter(skill_dir)
-        ref_ok, ref_msg = validate_skill_references(skill_dir)
-        success = fm_ok and ref_ok
-        output = f"Frontmatter: {fm_msg}; References: {ref_msg}"
-    
+    has_eval = eval_script.exists()
+
+    # Always do frontmatter + reference validation
+    fm_ok, fm_msg = validate_skill_frontmatter(skill_dir)
+    ref_ok, ref_msg = validate_skill_references(skill_dir)
+    success = fm_ok and ref_ok
+    output = f"Frontmatter: {fm_msg}; References: {ref_msg}; has_eval_script={has_eval}"
+
     latency = time.time() - start
-    
+
     return {
         "skill": skill_name,
         "eval_success": success,
         "eval_output": output[:2000],
         "latency_seconds": latency,
-        "has_eval_script": eval_script.exists()
+        "has_eval_script": has_eval
     }
 
 
@@ -155,24 +143,24 @@ def main():
     print(f"Discovering skills in {SKILLS_DIR}...")
     skills = discover_skills()
     print(f"Found {len(skills)} skills")
-    
+
     if not skills:
         print("No skills found. Exiting.")
         sys.exit(1)
-    
+
     all_metrics = {
         "timestamp": time.time(),
         "skills": []
     }
-    
+
     for skill_dir in skills:
         print(f"Checking {skill_dir.name}...")
         metrics = run_skill_evals(skill_dir)
-        
+
         metrics["trigger_accuracy"] = compute_trigger_accuracy(skill_dir)
         metrics["hallucination_rate"] = compute_hallucination_rate(skill_dir)
         metrics["tool_success_rate"] = compute_tool_success_rate(skill_dir)
-        
+
         healthy = (
             metrics["eval_success"] and
             metrics["trigger_accuracy"] >= 0.90 and
@@ -181,18 +169,18 @@ def main():
             metrics["latency_seconds"] < 30
         )
         metrics["healthy"] = healthy
-        
+
         all_metrics["skills"].append(metrics)
         status = "HEALTHY" if healthy else "DEGRADED"
         print(f"  {skill_dir.name}: {status}")
-    
+
     METRICS_FILE.parent.mkdir(parents=True, exist_ok=True)
     METRICS_FILE.write_text(json.dumps(all_metrics, indent=2))
     print(f"\nMetrics saved to {METRICS_FILE}")
-    
+
     healthy_count = sum(1 for s in all_metrics["skills"] if s["healthy"])
     print(f"\nSummary: {healthy_count}/{len(all_metrics['skills'])} skills healthy")
-    
+
     # Always exit 0 - let workflow check step handle degraded
     sys.exit(0)
 
