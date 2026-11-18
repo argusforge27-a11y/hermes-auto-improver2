@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Faceless Long-Form</title>
+<style>
+@font-face { font-family: 'Inter'; font-weight: 400; src: url('fonts/Inter-Regular.otf') format('opentype'); }
+@font-face { font-family: 'Inter'; font-weight: 500; src: url('fonts/Inter-Medium.otf') format('opentype'); }
+@font-face { font-family: 'Inter'; font-weight: 600; src: url('fonts/Inter-SemiBold.otf') format('opentype'); }
+@font-face { font-family: 'Inter'; font-weight: 700; src: url('fonts/Inter-Bold.otf') format('opentype'); }
+@font-face { font-family: 'Inter'; font-weight: 800; src: url('fonts/Inter-ExtraBold.otf') format('opentype'); }
+@font-face { font-family: 'Inter'; font-weight: 900; src: url('fonts/Inter-Black.otf') format('opentype'); }
+@font-face { font-family: 'Caladea'; font-weight: 700; src: url('fonts/Caladea-Bold.ttf') format('truetype'); }
+html, body { margin: 0; background: #111; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; }
+canvas { display: block; width: 100vw; height: auto; max-height: 100vh; object-fit: contain; }
+body.capture canvas { width: auto; height: auto; max-height: none; }
+#play { position: fixed; font: 800 26px Inter, sans-serif; padding: 16px 34px; border: 0; border-radius: 40px; background: #35D0BA; color: #05080F; cursor: pointer; }
+</style></head>
+<body>
+<canvas id="cv" width="1920" height="1080"></canvas>
+<button id="play" hidden>▶ PLAY</button>
+<script>if (location.search.includes('capture')) document.body.className = 'capture';</script>
+<script type="module" src="src/main.js"></script>
+</body></html>

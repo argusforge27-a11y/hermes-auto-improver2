@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Description Optimization</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .explainer { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .summary { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .summary .best { color: green; font-weight: bold; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f5f5f5; }
+    .positive-col { background: #e8f5e9; }
+    .negative-col { background: #ffebee; }
+    .pass { color: green; }
+    .fail { color: red; }
+    .legend { margin: 15px 0; }
+    .legend-item { display: inline-block; margin-right: 15px; }
+    .legend-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+    .swatch-positive { background: #4caf50; }
+    .swatch-negative { background: #f44336; }
+    .swatch-train { background: #2196f3; }
+    .swatch-test { background: #ff9800; }
+  </style>
+</head>
+<body>
+  <h1>Skill Description Optimization</h1>
+  <div class="explainer">
+    <strong>Optimizing your skill's description.</strong> This page updates automatically as Claude tests different versions of your skill's description. Each row is an iteration — a new description attempt.
+    The columns show test queries: green checkmarks mean the skill triggered correctly (or correctly didn't trigger), red crosses mean it got it wrong. The "Train" score shows performance on queries used to improve the description; the "Test" score shows performance on held-out queries the optimizer hasn't seen.
+    When it's done, Claude will apply the best-performing description to your skill.
+  </div>
+  <div id="content">Loading...</div>
+  <script>
+    const DATA = __OPTIMIZATION_DATA__;
+
+    function render() {
+      if (!DATA) return;
+      const history = DATA.history || [];
+      const trainQueries = history[0]?.train_results || [];
+      const testQueries = history[0]?.test_results || [];
+
+      let html = '';
+
+      html += `<div class="summary">
+        <p><strong>Original:</strong> ${DATA.original_description || 'N/A'}</p>
+        <p class="best"><strong>Best:</strong> ${DATA.best_description || 'N/A'}</p>
+        <p><strong>Best Score:</strong> ${DATA.best_score || 'N/A'} ${DATA.best_test_score ? '(test)' : '(train)'}</p>
+        <p><strong>Iterations:</strong> ${DATA.iterations_run || 0} | <strong>Train:</strong> ${DATA.train_size || '?'} | <strong>Test:</strong> ${DATA.test_size || '?'}</p>
+      </div>`;
+
+      html += `<div class="legend">
+        <span style="font-weight:600">Query columns:</span>
+        <span class="legend-item"><span class="legend-swatch swatch-positive"></span> Should trigger</span>
+        <span class="legend-item"><span class="legend-swatch swatch-negative"></span> Should NOT trigger</span>
+        <span class="legend-item"><span class="legend-swatch swatch-train"></span> Train</span>
+        <span class="legend-item"><span class="legend-swatch swatch-test"></span> Test</span>
+      </div>`;
+
+      html += '<div class="table-container"><table><thead><tr>';
+      html += '<th>Iter</th><th>Train</th><th>Test</th><th class="query-col">Description</th>';
+      for (const q of trainQueries) {
+        const polarity = q.should_trigger ? 'positive-col' : 'negative-col';
+        html += `<th class="${polarity}">${q.query}</th>`;
+      }
+      for (const q of testQueries) {
+        const polarity = q.should_trigger ? 'positive-col' : 'negative-col';
+        html += `<th class="${polarity}">${q.query}</th>`;
+      }
+      html += '</tr></thead><tbody>';
+
+      for (const h of history) {
+        const trainPassed = h.train_passed ?? 0;
+        const trainTotal = h.train_total ?? 0;
+        const testPassed = h.test_passed ?? 0;
+        const testTotal = h.test_total ?? 0;
+        const trainScore = trainTotal ? `${trainPassed}/${trainTotal}` : '—';
+        const testScore = testTotal ? `${testPassed}/${testTotal}` : '—';
+
+        html += `<tr>
+          <td>${h.iteration}</td>
+          <td>${trainScore}</td>
+          <td>${testScore}</td>
+          <td>${h.description}</td>`;
+
+        for (const r of h.train_results || []) {
+          const status = r.pass ? 'pass' : 'fail';
+          const icon = r.pass ? '✓' : '✗';
+          html += `<td class="${status}">${icon} ${r.triggers}/${r.runs}</td>`;
+        }
+        for (const r of h.test_results || []) {
+          const status = r.pass ? 'pass' : 'fail';
+          const icon = r.pass ? '✓' : '✗';
+          html += `<td class="${status}">${icon} ${r.triggers}/${r.runs}</td>`;
+        }
+        html += '</tr>';
+      }
+
+      html += '</tbody></table></div>';
+      document.getElementById('content').innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+    if (document.querySelector('meta[http-equiv="refresh"]')) {
+      setInterval(render, 5000);
+    }
+  </script>
+</body>
+</html>

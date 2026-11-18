@@ -1,0 +1,335 @@
+{
+  "title": "The Great Stink",
+  "theme": "parchment",
+  "voice": "bm_george",
+  "speed": 1.0,
+  "lead": 0.6,
+  "outro": 2.5,
+  "gap": 0.35,
+  "chapter_gap": 0.9,
+  "music": "bed",
+  "captions": "subtitle",
+  "sources": [
+    "DEMO CONTENT: a short worked example of the format. Check every fact against these kinds of sources before publishing your own video.",
+    "Joseph Bazalgette and the London sewer system: Encyclopaedia Britannica; Science Museum Group; Crossness Pumping Station Trust",
+    "The 1854 Broad Street cholera outbreak and John Snow: UCLA Department of Epidemiology (ph.ucla.edu/epi/snow)"
+  ],
+  "thumbnail": {
+    "text": "THE *GREAT* STINK",
+    "sub": "London, 1858",
+    "icon": "warning",
+    "color": "accent"
+  },
+  "chapters": [
+    {
+      "title": "The Hook",
+      "hook": true,
+      "mood": "tense",
+      "backdrop": "paper",
+      "lines": [
+        {
+          "text": "In the summer of eighteen fifty-eight, London smelled so bad that the government nearly ran away from its own capital.",
+          "scene": {
+            "type": "title",
+            "title": "The *Great* Stink",
+            "kicker": "London, 1858",
+            "sub": "How a summer of horror built the modern city"
+          }
+        },
+        {
+          "text": "Politicians hung curtains soaked in chloride of lime over the windows of Parliament, just so they could keep working.",
+          "scene": {
+            "type": "icon",
+            "icon": "building",
+            "headline": "Parliament, *soaked* in lime",
+            "sub": "Curtains drenched in chloride of lime to block the smell",
+            "side": "left"
+          }
+        },
+        {
+          "text": "The cause was simple, and disgusting.",
+          "scene": {
+            "type": "callout",
+            "text": "SIMPLE. AND *DISGUSTING.*",
+            "color": "accent2"
+          }
+        },
+        {
+          "text": "More than two million people were flushing their waste straight into the river that many of them drank from.",
+          "scene": {
+            "type": "stat",
+            "value": 2,
+            "suffix": "M+",
+            "label": "*people* sharing one river",
+            "icon": "people",
+            "at": "million"
+          }
+        },
+        {
+          "text": "This is the story of how a smell changed the way cities work."
+        }
+      ]
+    },
+    {
+      "title": "A River of Waste",
+      "mood": "calm",
+      "backdrop": "paper",
+      "lines": [
+        {
+          "text": "London was growing faster than anyone had planned for.",
+          "scene": {
+            "type": "map",
+            "title": "London, mid-eighteen-hundreds",
+            "focus": "uk",
+            "highlight": [
+              "GBR"
+            ],
+            "pins": [
+              {
+                "name": "London",
+                "lon": -0.12,
+                "lat": 51.5
+              }
+            ]
+          }
+        },
+        {
+          "text": "Homes had cesspits, and the cesspits overflowed into drains that were built for rainwater."
+        },
+        {
+          "text": "Those drains emptied into the Thames, which was also a source of the city's drinking water."
+        },
+        {
+          "text": "Doctors had a theory for the disease that followed: bad air, which they called miasma.",
+          "scene": {
+            "type": "text",
+            "kicker": "The theory",
+            "headline": "Disease travels on *foul air*",
+            "sub": "That was the belief. It was wrong.",
+            "icon": "cloud"
+          }
+        },
+        {
+          "text": "In eighteen fifty-four, a physician named John Snow mapped a cholera outbreak in Soho and pointed at a single water pump.",
+          "scene": {
+            "type": "icon",
+            "icon": "magnifier",
+            "kicker": "1854",
+            "headline": "John *Snow* maps the cholera deaths",
+            "sub": "In Soho they clustered around a single water pump.",
+            "side": "right"
+          }
+        },
+        {
+          "text": "Most officials weren't convinced. They still blamed the air."
+        },
+        {
+          "text": "Then came the hot summer of eighteen fifty-eight, and the river began to cook.",
+          "scene": {
+            "type": "timeline",
+            "title": "From pump to Parliament",
+            "events": [
+              {
+                "date": "1854",
+                "label": "John Snow traces a Soho outbreak to one pump"
+              },
+              {
+                "date": "1858",
+                "label": "The Great Stink",
+                "at": "summer"
+              },
+              {
+                "date": "1859",
+                "label": "Work begins on the new sewers",
+                "at": "acted"
+              }
+            ]
+          }
+        },
+        {
+          "text": "Parliament acted within weeks."
+        }
+      ]
+    },
+    {
+      "title": "The Engineer",
+      "mood": "epic",
+      "backdrop": "paper",
+      "lines": [
+        {
+          "text": "The job fell to Joseph Bazalgette, chief engineer of the Metropolitan Board of Works.",
+          "scene": {
+            "type": "icon",
+            "icon": "person",
+            "headline": "Joseph *Bazalgette*",
+            "sub": "Chief engineer, Metropolitan Board of Works",
+            "side": "right"
+          }
+        },
+        {
+          "text": "His plan was beautifully simple: stop the waste reaching the river at all.",
+          "scene": {
+            "type": "kinetic",
+            "text": "Stop the *waste* reaching the river *at all.*"
+          }
+        },
+        {
+          "text": "Great sewers would run beside the river, catch everything before it arrived, and carry it east.",
+          "scene": {
+            "type": "flow",
+            "title": "How the system works",
+            "steps": [
+              {
+                "label": "Street sewers",
+                "sub": "collect the waste",
+                "icon": "home"
+              },
+              {
+                "label": "Intercepting sewers",
+                "sub": "carry it east",
+                "icon": "drop",
+                "at": "Great"
+              },
+              {
+                "label": "Pumping stations",
+                "sub": "lift it along",
+                "icon": "gear",
+                "at": "Pumping"
+              },
+              {
+                "label": "Outfalls",
+                "sub": "far downstream",
+                "icon": "ship",
+                "at": "released"
+              }
+            ]
+          }
+        },
+        {
+          "text": "Pumping stations lifted it along, and it was released far downstream, on the outgoing tide."
+        },
+        {
+          "text": "The numbers were enormous: about eighty-two miles of main sewers,",
+          "scene": {
+            "type": "stat",
+            "value": 82,
+            "suffix": " miles",
+            "label": "of main *intercepting* sewers",
+            "sub": "plus roughly eleven hundred miles of street sewers",
+            "at": "eighty",
+            "color": "accent"
+          }
+        },
+        {
+          "text": "roughly eleven hundred miles of street sewers, and more than three hundred million bricks."
+        },
+        {
+          "text": "And here is the strange part.",
+          "scene": {
+            "type": "callout",
+            "text": "THE *TWIST*",
+            "color": "accent2"
+          }
+        },
+        {
+          "text": "Most of the people demanding those sewers believed in miasma, the wrong theory.",
+          "scene": {
+            "type": "compare",
+            "title": "Wrong theory, right result",
+            "left": {
+              "title": "The belief",
+              "icon": "cloud",
+              "points": [
+                "Disease travels on bad air",
+                "So remove the smell"
+              ]
+            },
+            "right": {
+              "title": "The result",
+              "icon": "drop",
+              "points": [
+                "Waste kept away from the water",
+                "Cholera retreated"
+              ]
+            }
+          }
+        },
+        {
+          "text": "But by carrying waste away from the river, they ended up tackling the real cause."
+        },
+        {
+          "text": "London's last major cholera outbreak came in eighteen sixty-six.",
+          "scene": {
+            "type": "text",
+            "kicker": "The result",
+            "headline": "Last major cholera outbreak: *1866*",
+            "icon": "check",
+            "hi": "accent"
+          }
+        }
+      ]
+    },
+    {
+      "title": "The Legacy",
+      "mood": "mellow",
+      "backdrop": "paper",
+      "lines": [
+        {
+          "text": "Bazalgette's sewers didn't just clean the river."
+        },
+        {
+          "text": "Building them also created new land along the Thames, where the Victoria Embankment now stands.",
+          "scene": {
+            "type": "icon",
+            "icon": "ship",
+            "kicker": "The Embankment",
+            "headline": "New land beside the *Thames*",
+            "sub": "The Victoria Embankment was built along the river with a sewer inside it.",
+            "side": "left"
+          }
+        },
+        {
+          "text": "The pumping stations were built with ornate ironwork, as if the sewers deserved a cathedral.",
+          "scene": {
+            "type": "icon",
+            "icon": "gear",
+            "kicker": "Crossness",
+            "headline": "Sewers with a *cathedral's* ironwork",
+            "sub": "Pumping stations decorated like grand public buildings.",
+            "side": "right"
+          }
+        },
+        {
+          "text": "And more than a hundred and fifty years later, much of his network is still in use.",
+          "scene": {
+            "type": "stat",
+            "value": 150,
+            "suffix": "+ years",
+            "label": "later, much of the network is *still in use*",
+            "icon": "clock",
+            "at": "fifty"
+          }
+        },
+        {
+          "text": "A city overwhelmed by its own waste had learned to carry it away.",
+          "scene": {
+            "type": "kinetic",
+            "text": "A city *overwhelmed* by its own waste learned to *carry it away.*"
+          }
+        },
+        {
+          "text": "Thanks for watching.",
+          "scene": {
+            "type": "outro",
+            "title": "Thanks for *watching*",
+            "sub": "More stories of how the modern world got built",
+            "items": [
+              "Subscribe",
+              "Watch next"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

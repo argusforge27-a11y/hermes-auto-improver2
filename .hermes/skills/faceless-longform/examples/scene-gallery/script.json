@@ -1,0 +1,42 @@
+{
+  "title": "Scene Gallery",
+  "theme": "midnight",
+  "voice": "bm_george",
+  "music": "bed",
+  "captions": "subtitle",
+  "thumbnail": { "text": "SCENE *GALLERY*", "sub": "every scene type", "icon": "star", "backdrop": "rays" },
+  "sources": ["Placeholder numbers: this file only shows what each scene type looks like. Replace everything."],
+  "chapters": [
+    { "title": "Openers", "hook": true, "mood": "upbeat", "lines": [
+      { "text": "This gallery shows every scene type the engine can draw, one after another.", "scene": { "type": "title", "title": "Scene *Gallery*", "kicker": "Faceless long-form", "sub": "Every scene type, one by one" } },
+      { "text": "A text scene is the simplest way to state one big idea.", "scene": { "type": "text", "kicker": "Text", "headline": "One *big* idea, stated plainly", "sub": "A headline, an optional supporting line and an optional icon.", "icon": "bulb" } },
+      { "text": "Kinetic type makes the key words land exactly when they are spoken.", "scene": { "type": "kinetic", "text": "Kinetic type lands each *word* exactly when it is *spoken.*" } },
+      { "text": "A callout interrupts the pattern and wakes the viewer up.", "scene": { "type": "callout", "text": "WAIT. *WHAT?*", "sub": "the pattern interrupt", "color": "accent2" } }
+    ] },
+    { "title": "Numbers and charts", "mood": "calm", "lines": [
+      { "text": "Stat scenes count up to a number, which is great for a surprising figure.", "scene": { "type": "stat", "value": 4.5, "decimals": 1, "prefix": "$", "suffix": "B", "label": "a *surprising* number", "sub": "with a small supporting note", "icon": "coin", "source": "Made-up source, 2024" } },
+      { "text": "Or a percentage, drawn as a ring.", "scene": { "type": "stat", "value": 73, "suffix": "%", "ring": true, "label": "of *viewers* never click", "color": "accent2" } },
+      { "text": "Bar charts grow in on the words you choose, one bar at a time.", "scene": { "type": "chart", "kind": "bar", "title": "Bar chart", "labels": ["2019", "2020", "2021", "2022", "2023"], "values": [12, 19, 28, 41, 63], "unit": "M", "highlight": 4, "source": "Placeholder data" } },
+      { "text": "Horizontal bars suit rankings and long labels.", "scene": { "type": "chart", "kind": "hbar", "title": "Horizontal bars", "labels": ["Alpha", "Bravo", "Charlie", "Delta"], "values": [92, 71, 54, 30], "unit": "%", "highlight": 0 } },
+      { "text": "Line charts draw a trend across time.", "scene": { "type": "chart", "kind": "line", "title": "Line chart", "labels": ["1990", "2000", "2010", "2020"], "series": [{ "name": "Series A", "values": [10, 25, 55, 90] }, { "name": "Series B", "values": [40, 42, 38, 30] }], "unit": "" } },
+      { "text": "And a donut chart shows how a whole is split.", "scene": { "type": "chart", "kind": "donut", "title": "Donut chart", "labels": ["Food", "Housing", "Transport", "Other"], "values": [30, 40, 20, 10], "centerLabel": "of income" } }
+    ] },
+    { "title": "Structure", "mood": "tense", "lines": [
+      { "text": "Bullets walk through a list, revealing each point on its own word.", "scene": { "type": "bullets", "title": "Bullets", "items": [{ "text": "First point, revealed early", "at": "Bullets" }, { "text": "A second point with a sub-line", "sub": "supporting detail underneath", "at": "revealing" }, { "text": "A third and final point", "at": "word" }] } },
+      { "text": "Comparisons set two sides against each other.", "scene": { "type": "compare", "title": "Compare", "left": { "title": "Option A", "icon": "rocket", "points": ["Fast to start", "Costs more"] }, "right": { "title": "Option B", "icon": "mountain", "points": ["Slow to start", "Costs less"] } } },
+      { "text": "A flow shows how one step leads to the next.", "scene": { "type": "flow", "title": "Flow", "steps": [{ "label": "Idea", "icon": "bulb" }, { "label": "Build", "icon": "gear" }, { "label": "Launch", "icon": "rocket" }] } },
+      { "text": "Flows can also run vertically.", "scene": { "type": "flow", "title": "Vertical flow", "dir": "v", "steps": [{ "label": "Gather the facts", "sub": "from primary sources" }, { "label": "Write the script" }, { "label": "Check every claim" }] } },
+      { "text": "Icon grids introduce a few related ideas at once.", "scene": { "type": "icons", "title": "Icons", "items": [{ "icon": "shield", "label": "Safe", "sub": "protected" }, { "icon": "bolt", "label": "Fast", "sub": "instant" }, { "icon": "heart", "label": "Loved", "sub": "popular" }, { "icon": "lock", "label": "Private", "sub": "yours only" }] } },
+      { "text": "A split scene pairs one icon with a statement.", "scene": { "type": "icon", "icon": "magnifier", "kicker": "Split", "headline": "One icon, one *statement*", "sub": "Good for introducing a person, place or concept.", "side": "right" } }
+    ] },
+    { "title": "Time, place and people", "mood": "epic", "lines": [
+      { "text": "Timelines place events in order and scroll when there are many.", "scene": { "type": "timeline", "title": "Timeline", "events": [{ "date": "1990", "label": "The beginning" }, { "date": "1995", "label": "First big step" }, { "date": "2001", "label": "Turning point" }, { "date": "2008", "label": "The crisis" }, { "date": "2015", "label": "Recovery" }, { "date": "2024", "label": "Today" }] } },
+      { "text": "Maps zoom in on a region and mark places and journeys.", "scene": { "type": "map", "title": "Map", "focus": "europe", "highlight": ["FRA", "DEU"], "pins": [{ "name": "Paris", "lon": 2.35, "lat": 48.86 }], "routes": [{ "from": [2.35, 48.86], "to": [13.4, 52.52], "label": "the route" }] } },
+      { "text": "The world view works for global stories.", "scene": { "type": "map", "title": "World", "focus": "world", "highlight": ["IND", "BRA", "USA"], "pins": [{ "name": "Kolkata", "lon": 88.36, "lat": 22.57 }] } },
+      { "text": "Quotes put a short line from someone in the spotlight.", "scene": { "type": "quote", "quote": "A short, memorable line goes here, set large and with room to breathe.", "who": "Name of the speaker", "role": "Role or source" } },
+      { "text": "Countdown cards make ranked lists easy to follow.", "scene": { "type": "rank", "n": 3, "total": 5, "title": "The third entry", "sub": "A line explaining why it earned this spot.", "stat": "42%", "statLabel": "a supporting number" } },
+      { "text": "Your own images get a slow camera move.", "scene": { "type": "image", "src": "media/sample.jpg", "caption": "Your photo here", "credit": "Credit: you or the licence holder" } },
+      { "text": "And a closing card ends the film.", "scene": { "type": "outro", "title": "That is *everything*", "sub": "Now make your own", "items": ["Subscribe", "Watch next"] } }
+    ] }
+  ]
+}

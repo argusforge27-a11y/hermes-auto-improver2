@@ -1,0 +1,11 @@
+---
+name: profile
+description: User profile information and preferences.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+---
+## User Profile Reference
+
+This reference file documents the user profile structure used by memory-never-forget.
+When this file doesn't exist, create it based on the user's role, preferences, and goals.

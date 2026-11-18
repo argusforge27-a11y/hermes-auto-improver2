@@ -1,0 +1,67 @@
+#!/bin/bash
+# lf: one launcher for the whole pipeline, so no command depends on a $SKILL variable or on the shell remembering anything.
+# Run it from the project folder as ./lf <command> (new_video.sh creates it there). Python scripts run through the skill's private env.
+set -u
+SK="$(cd "$(dirname "$0")/.." && pwd)"; PY="$SK/scripts/py"
+PROJ="${LF_PROJECT:-$PWD}"
+cmd="${1:-help}"; [ $# -gt 0 ] && shift
+need_project() { [ -f "$PROJ/script.json" ] || { echo "no script.json in $PROJ: run from the project folder (cd into it) or set LF_PROJECT"; exit 1; }; }
+node_tool() { command -v node >/dev/null || { echo "node not found (need Node.js 22+). Run: $SK/scripts/setup.sh"; exit 1; }; need_project; cd "$PROJ" && node tools/capture.mjs "$@"; }
+run_py() { local s="$1"; shift; "$PY" "$SK/scripts/$s" "$@"; }
+
+case "$cmd" in
+  help|-h|--help) cat <<'H'
+./lf <command>                 run inside the project folder
+  doctor                       check this computer (Node, ffmpeg, Chrome, Python env, voice models, disk, RAM)
+  lint                         check script.json (structure, scenes, pacing, writing hygiene)
+  estimate                     estimated timing without a voice (quick draft)
+  voices                       list narrator voices
+  voice [--voice V --speed S]  narrate script.json (cached per sentence; resumable)          [slow: run with ./lf bg voice]
+  words                        word timing (Whisper; falls back to exact line timing)         [./lf words --audio my.m4a for your own recording]
+  check                        draw every moment of the film; must end with CHECK OK
+  sheets [step] [--chapter N]  contact sheets per chapter in review/
+  frames <dir> "t1,t2"         full-size frames at those seconds
+  cues | mix                   sound cues, then the audio mix (data/mix.wav)
+  thumb                        thumbnail (renders/thumbnail.jpg)
+  draft                        check + cues + mix + draft render (renders/draft.mp4)         [slow: ./lf bg draft]
+  final                        cues + mix + final render + automatic QA (renders/final.mp4)  [slow: ./lf bg final]
+  render [args]                raw renderer (--draft --chapters 3,4 --jobs N --force)
+  qa [file] [--draft]          verify a render: duration, streams, black/frozen frames, silence, loudness, frames to look at
+  share [MB]                   make renders/share.mp4 small enough for chat delivery (default 45 MB)
+  chapters                     renders/chapters.txt + description-blocks.md
+  watch <video-or-url> [...]   let the agent watch a video (the Watch skill, local engine); ./lf watch --setup installs it
+  bg <command...>              run any command above in the background: logs/<command>.log
+  status                       progress of background jobs
+  preview                      watch the film in a browser
+H
+  ;;
+  doctor) exec bash "$SK/scripts/setup.sh" --check "$@";;
+  lint) need_project; run_py check_script.py "$PROJ" "$@";;
+  estimate) need_project; run_py estimate.py "$PROJ" "$@";;
+  voices) run_py voice.py --list;;
+  voice) need_project; run_py voice.py "$PROJ" "$@";;
+  words) need_project; run_py words.py "$PROJ" "$@";;
+  chapters) need_project; run_py chapters.py "$PROJ" "$@";;
+  check|sheets|frames|cues|thumb|render|segment|assemble|preview) node_tool "$cmd" "$@";;
+  mix) need_project; cd "$PROJ" && "$PY" tools/mix.py .;;
+  draft) need_project; node_tool check || exit 1; node_tool cues || exit 1; (cd "$PROJ" && "$PY" tools/mix.py .) || exit 1; node_tool render --draft "$@";;
+  final) need_project; node_tool cues || exit 1; (cd "$PROJ" && "$PY" tools/mix.py .) || exit 1; node_tool render "$@" || exit 1; run_py qa_video.py "$PROJ";;
+  qa) need_project; run_py qa_video.py "$PROJ" "$@";;
+  share) need_project; run_py qa_video.py "$PROJ" --share "${1:-45}";;
+  watch) exec bash "$SK/scripts/watch_run.sh" "$@";;
+  bg)
+    need_project; [ $# -gt 0 ] || { echo "usage: ./lf bg <command...>   e.g. ./lf bg voice"; exit 1; }
+    name="$1"; mkdir -p "$PROJ/logs"; log="$PROJ/logs/$name.log"; rm -f "$PROJ/logs/$name.exit"
+    ( cd "$PROJ" && LF_PROJECT="$PROJ" nohup bash -c '"$0" "$@"; echo $? > "logs/'"$name"'.exit"' "$SK/scripts/lf" "$@" > "$log" 2>&1 < /dev/null & echo $! > "logs/$name.pid" )
+    echo "started '$name' in the background (pid $(cat "$PROJ/logs/$name.pid")). Progress: ./lf status   Full log: logs/$name.log";;
+  status)
+    need_project; shopt -s nullglob; any=0
+    for p in "$PROJ"/logs/*.pid; do
+      any=1; n=$(basename "$p" .pid); pid=$(cat "$p"); log="$PROJ/logs/$n.log"; ex="$PROJ/logs/$n.exit"
+      if [ -f "$ex" ]; then [ "$(cat "$ex")" = 0 ] && st="DONE" || st="FAILED (exit $(cat "$ex"))"
+      elif kill -0 "$pid" 2>/dev/null; then st="RUNNING"
+      else st="STOPPED (no result; the process ended unexpectedly)"; fi
+      echo "== $n: $st"; [ -f "$log" ] && tail -n 3 "$log" | tr '\r' '\n' | tail -n 3
+    done; [ $any = 0 ] && echo "no background jobs";;
+  *) echo "unknown command '$cmd'. ./lf help lists the commands."; exit 1;;
+esac
