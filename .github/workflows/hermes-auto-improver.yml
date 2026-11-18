@@ -13,7 +13,9 @@ env:
   # Skills dir must be populated before running health check
   # Option 1: Skills are in this repo (workflow expects all skills here)
   # Option 2: Override via HERMES_SKILLS_DIR env var to point to cloned skills repo
-  HERMES_SKILLS_DIR: ${{ github.workspace }}
+  # Option 3: Clone skills-from repo (default for production)
+  HERMES_SKILLS_REPO: https://github.com/argusforge27-a11y/hermes-skills.git
+  HERMES_SKILLS_DIR: ${{ github.workspace }}/skills
   HERMES_METRICS_FILE: ${{ github.workspace }}/health_metrics.json
   HERMES_MEMORY_FILE: ${{ github.workspace }}/.hermes/memory/memory.json
   HERMES_LESSONS_FILE: ${{ github.workspace }}/references/learned_lessons.jsonl
@@ -26,6 +28,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
+      - name: Clone Skills Repository
+        if: env.HERMES_SKILLS_REPO != ''
+        run: |
+          git clone --depth 1 "$HERMES_SKILLS_REPO" "${HERMES_SKILLS_DIR}"
       
       - name: Setup Python
         uses: actions/setup-python@v5
