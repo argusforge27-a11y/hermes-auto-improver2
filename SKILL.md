@@ -165,3 +165,6 @@ For any skill to run in GitHub Actions (or any cloud runner):
 - **learned_lessons.jsonl must be gitignored**: The file grows unbounded and triggers GitHub's 50MB large-file warning. Add `references/learned_lessons.jsonl` to `.gitignore` or truncate it (`> file`) before each push. The file is writable at runtime but should never be committed.
 
 
+
+
+<!-- AUTO-IMPROVED: Add verification step after each tool call; Ensure all referenced files exist -->
